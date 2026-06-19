@@ -1,8 +1,1 @@
-blogs:
-    - id: 4a1a5d0a-c9ff-4d59-8389-666336479697
-      data:
-        blog_name: hello
-        content: hleooekaedgfvhaernkv ruancfarinnarl;gk
-        author: awt
-        created_at: 1781875510
-        updated_at: 1781875510
+blogs: []

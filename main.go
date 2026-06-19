@@ -65,8 +65,9 @@ func ReadFromDb(db *DBFmt, blogs *[]CBlogs) []CBlogs {
 	return *blogs
 }
 
-func WriteToDb(db *DBFmt, todos []CBlogs) {
-	for _, entry := range todos {
+func WriteToDb(db *DBFmt, blogs []CBlogs) {
+	db.Blogs = nil
+	for _, entry := range blogs {
 		db.Blogs = append(db.Blogs, DBBlogFmt{
 			Id: entry.Id,
 			Data: DBBlogDataFmt{
@@ -109,7 +110,6 @@ func main(){
 		content   := ctx.Request.FormValue("content")
 		author    := ctx.Request.FormValue("author")
 		id := uuid.New()
-
 		blog := CBlogs{
 			Blog_name: blog_name,   
 			Id:        id.String(),   
@@ -143,6 +143,40 @@ func main(){
 				"blog": blogitem,
 			})
 		}
+	})
+
+	router.PUT("/update/:id",func(ctx *gin.Context) {
+		id := ctx.Params.ByName("id")
+		name := ctx.Request.FormValue("name")
+		content   := ctx.Request.FormValue("content")
+		author    := ctx.Request.FormValue("author")
+
+		for i, blog := range blogs {
+			if blog.Id == id {
+				if name != "" {
+					blog.Blog_name = name
+				}
+				if content != ""{
+					blog.Content = content
+				}
+				if author != ""{
+					blog.Author = author
+				}
+				blog.UpdatedAt = time.Now()
+				blogs[i] = blog
+				WriteToDb(&db, blogs)
+				ctx.JSON(200, gin.H{
+					"message": "Blog updated successfully",
+					"Blogs":   blogs,
+				})
+				return
+			}
+		}
+		ctx.JSON(200, gin.H{
+			"message": "Blog not found, please check blogs from below to be updated",
+			"blogs": blogs,
+		})
+
 	})
 
 	router.DELETE("/delete/:id", func(ctx *gin.Context) {
