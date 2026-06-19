@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gopkg.in/yaml.v3"
-	//"net/http"
+	"net/http"
 	"os"
 	//"slices"
 	//"strings"
@@ -124,6 +125,26 @@ func main(){
 		})
 	})
 
+	router.GET("/:id", func(ctx *gin.Context) {
+		id := ctx.Params.ByName("id")
+		var blogitem CBlogs
+		for _,blog := range blogs{
+			if blog.Id == id{
+				blogitem=blog
+			}
+		} 
+		if blogitem== (CBlogs{}){
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"message": "blog not found",
+			})
+		}else{
+			ctx.JSON(200, gin.H{
+				"message": "Blog found",
+				"blog": blogitem,
+			})
+		}
+	})
+
 	router.GET("/create", func(ctx *gin.Context) {
 		ctx.File("index.html")
 	})
@@ -133,7 +154,7 @@ func main(){
 			"blogs": blogs,
 		})
 	})
-
+	router.SetTrustedProxies(nil)
 	router.Run(":8000")
 
 }
