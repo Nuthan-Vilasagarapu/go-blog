@@ -8,7 +8,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"net/http"
 	"os"
-	//"slices"
+	"slices"
 	//"strings"
 	"time"
 )
@@ -125,7 +125,7 @@ func main(){
 		})
 	})
 
-	router.GET("/:id", func(ctx *gin.Context) {
+	router.GET("/search/:id", func(ctx *gin.Context) {
 		id := ctx.Params.ByName("id")
 		var blogitem CBlogs
 		for _,blog := range blogs{
@@ -141,6 +141,30 @@ func main(){
 			ctx.JSON(200, gin.H{
 				"message": "Blog found",
 				"blog": blogitem,
+			})
+		}
+	})
+
+	router.DELETE("/delete/:id", func(ctx *gin.Context) {
+		id := ctx.Params.ByName("id")
+		var blogitem CBlogs
+		var pos int
+		for i,blog := range blogs{
+			if blog.Id == id{
+				blogitem=blog
+				pos=i
+			}
+		} 
+		if blogitem== (CBlogs{}){
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"message": "blog not found",
+			})
+		}else{
+			blogs = slices.Delete(blogs, pos, pos+1)
+			WriteToDb(&db, blogs)
+			ctx.JSON(200, gin.H{
+				"message": "Blog deleted succesfully",
+				"blogs": blogs,
 			})
 		}
 	})
