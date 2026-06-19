@@ -34,11 +34,11 @@ type CBlogs struct {
 }
 
 type DBBlogDataFmt struct {
-	Blog_name string    `yaml:"blog_name"`
-	Content   string    `yaml:"content"`
-	Author    string    `yaml:"author"`
-	CreatedAt int64 	`yaml:"created_at"`
-	UpdatedAt int64 	`yaml:"updated_at"`
+	Blog_name string `yaml:"blog_name"`
+	Content   string `yaml:"content"`
+	Author    string `yaml:"author"`
+	CreatedAt int64  `yaml:"created_at"`
+	UpdatedAt int64  `yaml:"updated_at"`
 }
 
 type DBBlogFmt struct {
@@ -55,7 +55,7 @@ func ReadFromDb(db *DBFmt, blogs *[]CBlogs) []CBlogs {
 		*blogs = append(*blogs, CBlogs{
 			Blog_name: entry.Data.Blog_name,
 			Id:        entry.Id,
-			Content:   entry.Data.Content,    
+			Content:   entry.Data.Content,
 			Author:    entry.Data.Author,
 			CreatedAt: time.Unix(entry.Data.CreatedAt, 0),
 			UpdatedAt: time.Unix(entry.Data.UpdatedAt, 0),
@@ -72,7 +72,7 @@ func WriteToDb(db *DBFmt, blogs []CBlogs) {
 			Id: entry.Id,
 			Data: DBBlogDataFmt{
 				Blog_name: entry.Blog_name,
-				Content:   entry.Content,    
+				Content:   entry.Content,
 				Author:    entry.Author,
 				CreatedAt: entry.CreatedAt.Unix(),
 				UpdatedAt: entry.UpdatedAt.Unix(),
@@ -87,7 +87,7 @@ func WriteToDb(db *DBFmt, blogs []CBlogs) {
 	os.WriteFile("blogDB.yaml", data, 0644)
 }
 
-func main(){
+func main() {
 	router := gin.Default()
 	blogs := []CBlogs{}
 	db := DBFmt{}
@@ -104,17 +104,16 @@ func main(){
 	}
 	blogs = ReadFromDb(&db, &blogs)
 
-
 	router.POST("/creating", func(ctx *gin.Context) {
 		blog_name := ctx.Request.FormValue("blog_name")
-		content   := ctx.Request.FormValue("content")
-		author    := ctx.Request.FormValue("author")
+		content := ctx.Request.FormValue("content")
+		author := ctx.Request.FormValue("author")
 		id := uuid.New()
 		blog := CBlogs{
-			Blog_name: blog_name,   
-			Id:        id.String(),   
-			Content:   content,    
-			Author:    author,  
+			Blog_name: blog_name,
+			Id:        id.String(),
+			Content:   content,
+			Author:    author,
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
@@ -128,19 +127,19 @@ func main(){
 	router.GET("/search/:id", func(ctx *gin.Context) {
 		id := ctx.Params.ByName("id")
 		var blogitem CBlogs
-		for _,blog := range blogs{
-			if blog.Id == id{
-				blogitem=blog
+		for _, blog := range blogs {
+			if blog.Id == id {
+				blogitem = blog
 			}
-		} 
-		if blogitem== (CBlogs{}){
+		}
+		if blogitem == (CBlogs{}) {
 			ctx.JSON(http.StatusNotFound, gin.H{
 				"message": "blog not found",
 			})
-		}else{
+		} else {
 			ctx.JSON(200, gin.H{
 				"message": "Blog found",
-				"blog": blogitem,
+				"blog":    blogitem,
 			})
 		}
 	})
@@ -150,38 +149,38 @@ func main(){
 		name := ctx.Query("name")
 		content := ctx.Query("content")
 		BlogFound := []CBlogs{}
-		for _,blog := range blogs{
+		for _, blog := range blogs {
 			if (name != "" && strings.Contains(blog.Blog_name, name)) || (content != "" && strings.Contains(blog.Content, content)) || (author != "" && strings.Contains(blog.Author, author)) {
 				BlogFound = append(BlogFound, blog)
 			}
 		}
-		if BlogFound == nil{
+		if BlogFound == nil {
 			ctx.JSON(200, gin.H{
 				"message": "No Blogs found with search",
 			})
-		}else{
+		} else {
 			ctx.JSON(200, gin.H{
 				"message": "Blogs matched with search",
-				"Blogs": BlogFound,
+				"Blogs":   BlogFound,
 			})
 		}
 	})
 
-	router.PUT("/update/:id",func(ctx *gin.Context) {
+	router.PUT("/update/:id", func(ctx *gin.Context) {
 		id := ctx.Params.ByName("id")
 		name := ctx.Request.FormValue("name")
-		content   := ctx.Request.FormValue("content")
-		author    := ctx.Request.FormValue("author")
+		content := ctx.Request.FormValue("content")
+		author := ctx.Request.FormValue("author")
 
 		for i, blog := range blogs {
 			if blog.Id == id {
 				if name != "" {
 					blog.Blog_name = name
 				}
-				if content != ""{
+				if content != "" {
 					blog.Content = content
 				}
-				if author != ""{
+				if author != "" {
 					blog.Author = author
 				}
 				blog.UpdatedAt = time.Now()
@@ -196,7 +195,7 @@ func main(){
 		}
 		ctx.JSON(200, gin.H{
 			"message": "Blog not found, please check blogs from below to be updated",
-			"blogs": blogs,
+			"blogs":   blogs,
 		})
 
 	})
@@ -205,24 +204,62 @@ func main(){
 		id := ctx.Params.ByName("id")
 		var blogitem CBlogs
 		var pos int
-		for i,blog := range blogs{
-			if blog.Id == id{
-				blogitem=blog
-				pos=i
+		for i, blog := range blogs {
+			if blog.Id == id {
+				blogitem = blog
+				pos = i
 			}
-		} 
-		if blogitem== (CBlogs{}){
+		}
+		if blogitem == (CBlogs{}) {
 			ctx.JSON(http.StatusNotFound, gin.H{
 				"message": "blog not found",
 			})
-		}else{
+		} else {
 			blogs = slices.Delete(blogs, pos, pos+1)
 			WriteToDb(&db, blogs)
 			ctx.JSON(200, gin.H{
 				"message": "Blog deleted succesfully",
-				"blogs": blogs,
+				"blogs":   blogs,
 			})
 		}
+	})
+
+	router.DELETE("/DeleteBlog", func(ctx *gin.Context) {
+		author := ctx.Query("author")
+		name := ctx.Query("name")
+		content := ctx.Query("content")
+		BlogTodelete := []CBlogs{}
+		BlogNotTodelete := []CBlogs{}
+		for _, blog := range blogs {
+			if (name != "" && strings.Contains(blog.Blog_name, name)) || (content != "" && strings.Contains(blog.Content, content)) || (author != "" && strings.Contains(blog.Author, author)) {
+				BlogTodelete = append(BlogTodelete, blog)
+			}else{
+				BlogNotTodelete = append(BlogNotTodelete, blog)
+			}
+		}
+		if len(BlogTodelete) == 0{
+			ctx.JSON(200, gin.H{
+				"message": "No Blogs found to delete",
+				"blogs": blogs,
+			})
+		} else {
+			blogs = BlogNotTodelete
+			WriteToDb(&db, blogs)
+			ctx.JSON(200, gin.H{
+				"message": "Blogs after deletion",
+				"Blogs":   blogs,
+			})
+		}
+	})
+
+
+	router.DELETE("/deleteAll", func(ctx *gin.Context) {
+		blogs = []CBlogs{}
+		WriteToDb(&db, blogs)
+		ctx.JSON(200, gin.H{
+			"message": "All Blogs deleted succesfully, there are no blogs",
+			"blogs":   blogs,
+		})
 	})
 
 	router.GET("/create", func(ctx *gin.Context) {
