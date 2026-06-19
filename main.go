@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"os"
 	"slices"
-	//"strings"
+	"strings"
 	"time"
 )
 
@@ -141,6 +141,26 @@ func main(){
 			ctx.JSON(200, gin.H{
 				"message": "Blog found",
 				"blog": blogitem,
+			})
+		}
+	})
+
+	router.GET("/searchByCnt", func(ctx *gin.Context) {
+		content := ctx.Query("content")
+		CntBlog := []CBlogs{}
+		for _,blog := range blogs{
+			if strings.Contains(blog.Content, content){
+				CntBlog = append(CntBlog, blog)
+			}
+		}
+		if CntBlog == nil{
+			ctx.JSON(200, gin.H{
+				"message": "No Blogs found",
+			})
+		}else{
+			ctx.JSON(200, gin.H{
+				"message": "Blogs matched with content",
+				"Blogs": CntBlog,
 			})
 		}
 	})
