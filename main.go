@@ -145,22 +145,24 @@ func main(){
 		}
 	})
 
-	router.GET("/searchByCnt", func(ctx *gin.Context) {
+	router.GET("/searchBlog", func(ctx *gin.Context) {
+		author := ctx.Query("author")
+		name := ctx.Query("name")
 		content := ctx.Query("content")
-		CntBlog := []CBlogs{}
+		BlogFound := []CBlogs{}
 		for _,blog := range blogs{
-			if strings.Contains(blog.Content, content){
-				CntBlog = append(CntBlog, blog)
+			if (name != "" && strings.Contains(blog.Blog_name, name)) || (content != "" && strings.Contains(blog.Content, content)) || (author != "" && strings.Contains(blog.Author, author)) {
+				BlogFound = append(BlogFound, blog)
 			}
 		}
-		if CntBlog == nil{
+		if BlogFound == nil{
 			ctx.JSON(200, gin.H{
-				"message": "No Blogs found",
+				"message": "No Blogs found with search",
 			})
 		}else{
 			ctx.JSON(200, gin.H{
-				"message": "Blogs matched with content",
-				"Blogs": CntBlog,
+				"message": "Blogs matched with search",
+				"Blogs": BlogFound,
 			})
 		}
 	})
