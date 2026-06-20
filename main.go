@@ -16,7 +16,6 @@ import (
 /*
 YAML content specification
 blogs:
-
 	id:
 		blog_name:
 		content
@@ -25,7 +24,7 @@ blogs:
 		updated_at
 */
 type CBlogs struct {
-	Blog_name string    `json:"blog_name"`
+	BlogName string    `json:"blog_name"`
 	Id        string    `json:"id"`
 	Content   string    `json:"content"`
 	Author    string    `json:"author"`
@@ -34,7 +33,7 @@ type CBlogs struct {
 }
 
 type DBBlogDataFmt struct {
-	Blog_name string `yaml:"blog_name"`
+	BlogName string `yaml:"blog_name"`
 	Content   string `yaml:"content"`
 	Author    string `yaml:"author"`
 	CreatedAt int64  `yaml:"created_at"`
@@ -53,7 +52,7 @@ type DBFmt struct {
 func ReadFromDb(db *DBFmt, blogs *[]CBlogs) []CBlogs {
 	for _, entry := range db.Blogs {
 		*blogs = append(*blogs, CBlogs{
-			Blog_name: entry.Data.Blog_name,
+			BlogName: entry.Data.BlogName,
 			Id:        entry.Id,
 			Content:   entry.Data.Content,
 			Author:    entry.Data.Author,
@@ -71,7 +70,7 @@ func WriteToDb(db *DBFmt, blogs []CBlogs) {
 		db.Blogs = append(db.Blogs, DBBlogFmt{
 			Id: entry.Id,
 			Data: DBBlogDataFmt{
-				Blog_name: entry.Blog_name,
+				BlogName: entry.BlogName,
 				Content:   entry.Content,
 				Author:    entry.Author,
 				CreatedAt: entry.CreatedAt.Unix(),
@@ -104,13 +103,13 @@ func main() {
 	}
 	blogs = ReadFromDb(&db, &blogs)
 
-	router.POST("/creating", func(ctx *gin.Context) {
+	router.POST("/", func(ctx *gin.Context) {
 		blog_name := ctx.Request.FormValue("blog_name")
 		content := ctx.Request.FormValue("content")
 		author := ctx.Request.FormValue("author")
 		id := uuid.New()
 		blog := CBlogs{
-			Blog_name: blog_name,
+			BlogName: blog_name,
 			Id:        id.String(),
 			Content:   content,
 			Author:    author,
@@ -124,7 +123,7 @@ func main() {
 		})
 	})
 
-	router.GET("/search/:id", func(ctx *gin.Context) {
+	router.GET("/blog/:id", func(ctx *gin.Context) {
 		id := ctx.Params.ByName("id")
 		var blogitem CBlogs
 		for _, blog := range blogs {
@@ -144,13 +143,13 @@ func main() {
 		}
 	})
 
-	router.GET("/searchBlog", func(ctx *gin.Context) {
+	router.GET("/search", func(ctx *gin.Context) {
 		author := ctx.Query("author")
 		name := ctx.Query("name")
 		content := ctx.Query("content")
 		BlogFound := []CBlogs{}
 		for _, blog := range blogs {
-			if (name != "" && strings.Contains(blog.Blog_name, name)) || (content != "" && strings.Contains(blog.Content, content)) || (author != "" && strings.Contains(blog.Author, author)) {
+			if (name != "" && strings.Contains(blog.BlogName, name)) || (content != "" && strings.Contains(blog.Content, content)) || (author != "" && strings.Contains(blog.Author, author)) {
 				BlogFound = append(BlogFound, blog)
 			}
 		}
@@ -166,7 +165,7 @@ func main() {
 		}
 	})
 
-	router.PUT("/update/:id", func(ctx *gin.Context) {
+	router.PUT("/:id", func(ctx *gin.Context) {
 		id := ctx.Params.ByName("id")
 		name := ctx.Request.FormValue("name")
 		content := ctx.Request.FormValue("content")
@@ -175,7 +174,7 @@ func main() {
 		for i, blog := range blogs {
 			if blog.Id == id {
 				if name != "" {
-					blog.Blog_name = name
+					blog.BlogName = name
 				}
 				if content != "" {
 					blog.Content = content
@@ -200,7 +199,7 @@ func main() {
 
 	})
 
-	router.DELETE("/delete/:id", func(ctx *gin.Context) {
+	router.DELETE("/:id", func(ctx *gin.Context) {
 		id := ctx.Params.ByName("id")
 		var blogitem CBlogs
 		var pos int
@@ -224,36 +223,8 @@ func main() {
 		}
 	})
 
-	router.DELETE("/DeleteBlog", func(ctx *gin.Context) {
-		author := ctx.Query("author")
-		name := ctx.Query("name")
-		content := ctx.Query("content")
-		BlogTodelete := []CBlogs{}
-		BlogNotTodelete := []CBlogs{}
-		for _, blog := range blogs {
-			if (name != "" && strings.Contains(blog.Blog_name, name)) || (content != "" && strings.Contains(blog.Content, content)) || (author != "" && strings.Contains(blog.Author, author)) {
-				BlogTodelete = append(BlogTodelete, blog)
-			}else{
-				BlogNotTodelete = append(BlogNotTodelete, blog)
-			}
-		}
-		if len(BlogTodelete) == 0{
-			ctx.JSON(200, gin.H{
-				"message": "No Blogs found to delete",
-				"blogs": blogs,
-			})
-		} else {
-			blogs = BlogNotTodelete
-			WriteToDb(&db, blogs)
-			ctx.JSON(200, gin.H{
-				"message": "Blogs after deletion",
-				"Blogs":   blogs,
-			})
-		}
-	})
 
-
-	router.DELETE("/deleteAll", func(ctx *gin.Context) {
+	router.DELETE("/", func(ctx *gin.Context) {
 		blogs = []CBlogs{}
 		WriteToDb(&db, blogs)
 		ctx.JSON(200, gin.H{
@@ -262,15 +233,12 @@ func main() {
 		})
 	})
 
-	router.GET("/create", func(ctx *gin.Context) {
-		ctx.File("index.html")
-	})
-
 	router.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"blogs": blogs,
 		})
 	})
+
 	router.SetTrustedProxies(nil)
 	router.Run(":8000")
 
