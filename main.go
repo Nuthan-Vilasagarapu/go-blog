@@ -1,9 +1,8 @@
 package main
 
 import (
-	"go-blog/middlewares"
+	"go-blog/repository"
 	"go-blog/routers"
-	"go-blog/stores"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,8 +22,7 @@ blogs:
 func main() {
 	router := gin.Default()
 
-	stores.LoadDB()
-	middlewares.LoadMiddlewares(router)
+	repository.LoadDB()
 	routers.LoadRoutes(router)
 
 	router.SetTrustedProxies(nil)

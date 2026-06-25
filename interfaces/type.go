@@ -2,7 +2,7 @@ package interfaces
 
 import "time"
 
-type IBlogs struct {
+type IBlog struct {
 	BlogName  string    `json:"blog_name"`
 	Id        string    `json:"id"`
 	Content   string    `json:"content"`
@@ -11,11 +11,12 @@ type IBlogs struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-type IUsers struct {
+type IUser struct {
 	Id           string    `json:"id"`
 	UserName     string    `json:"username"`
 	CreatedAt    time.Time `json:"created_at"`
 	LastLoginAt  time.Time `json:"last_session_on"`
+	UpdateAt     time.Time `json:"updated_at"`
 	PasswordHash string
 }
 

@@ -3,20 +3,17 @@ package stores
 import (
 	"go-blog/constants"
 
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-gonic/gin"
 )
 
-func CookieStore() cookie.Store {
-	store := cookie.NewStore([]byte(constants.SecretKey))
-	store.Options(
-		sessions.Options{
-			Path:     "/",
-			Secure:   false,
-			HttpOnly: true,
-			MaxAge:   3600,
-		},
-	)
+func SetAuthCookie(ctx *gin.Context, token string) {
+	ctx.SetCookie(constants.CookieName, token, 3600, "/", "", false, true)
+}
 
-	return store
+func ReadAuthCookie(ctx *gin.Context) (string, error) {
+	return ctx.Cookie(constants.CookieName)
+}
+
+func ClearAuthCookie(ctx *gin.Context) {
+	ctx.SetCookie(constants.CookieName, "", -1, "/", "", false, true)
 }

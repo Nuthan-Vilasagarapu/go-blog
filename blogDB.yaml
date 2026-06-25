@@ -40,10 +40,10 @@ users:
     username: hello
     password_hash: 7d793037a0760186574b0282f2f435e7
     created_at: 1781974562
-    last_session_on: 1782386877
+    last_session_on: 1781974562
 - id: 51ace53d-8be6-43c5-a611-5c6baf1ce5b8
   data:
     username: hello2
     password_hash: 015308dd469e01f05a9f41daf2cbaadb
     created_at: 1782386947
-    last_session_on: 1782386955
+    last_session_on: 1782388525
