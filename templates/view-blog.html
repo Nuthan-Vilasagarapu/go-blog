@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .title }}</title>
+</head>
+<body>
+    {{ $blog := .Blog}}
+    <b>{{$blog.Name}}</b> | by <i>{{$blog.Author}}</i>
+    <p>
+        {{$blog.Content}}
+    </p>
+    Published At :- {{ $blog.PublishedAt}}
+</body>
+</html>

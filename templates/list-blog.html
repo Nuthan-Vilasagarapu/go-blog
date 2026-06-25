@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .title }}</title>
+</head>
+<body>
+    {{range .Blogs}}
+        <b>{{.Name}}</b> | by <i>{{.Author}}</i>
+        <a href="/views/blog/{{.Id}}">View</a>
+    {{end}}
+</body>
+</html>

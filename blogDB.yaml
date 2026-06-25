@@ -1,20 +1,49 @@
 blogs:
-    - id: 1a80830a-9406-47f5-a90b-430de47c2433
-      data:
-        blog_name: Code & Coffee Chronicles
-        content: |-
-            Debugging isn’t just about fixing errors — it’s about understanding how your logic interacts with the system. Every bug is a hidden lesson: sometimes it’s a reminder to handle edge cases, sometimes it’s a nudge to write cleaner code, and often it’s a push to think like the compiler.
-
-            When you debug, you’re not just solving problems; you’re sharpening your ability to anticipate them. That’s why seasoned developers often say: “Code is written once, but debugged forever.”
-
-            So next time you hit a bug, don’t get frustrated. Grab a cup of coffee, slow down, and let the bug guide you to becoming a sharper programmer.
-        author: 7b7e1698-5951-4424-be20-d66af722b2bd
-        created_at: 1781976161
-        updated_at: 1781976161
+- id: 1a80830a-9406-47f5-a90b-430de47c2433
+  data:
+    blog_name: Code & Coffee Chronicles
+    content: "Debugging isn’t just about fixing errors — it’s about understanding how your logic interacts with the system. Every bug is a hidden lesson: sometimes it’s a reminder to handle edge cases, sometimes it’s a nudge to write cleaner code, and often it’s a push to think like the compiler.\n\nWhen you debug, you’re not just solving problems; you’re sharpening your ability to anticipate them. That’s why seasoned developers often say: “Code is written once, but debugged forever.”\n\nSo next time you hit a bug, don’t get frustrated. Grab a cup of coffee, slow down, and let the bug guide you to becoming a sharper programmer."
+    author: 7b7e1698-5951-4424-be20-d66af722b2bd
+    created_at: 1781976161
+    updated_at: 1781976161
+- id: 7900f330-c38f-4ba8-8d0d-ae503d1ecff8
+  data:
+    blog_name: ""
+    content: ""
+    author: 7b7e1698-5951-4424-be20-d66af722b2bd
+    created_at: 1782380217
+    updated_at: 1782380217
+- id: 26d2a21e-3f11-42f6-8c78-32dcd89430a4
+  data:
+    blog_name: pamcpascpas
+    content: " aslkdmaklsdmalksdmlakmsd"
+    author: 7b7e1698-5951-4424-be20-d66af722b2bd
+    created_at: 1782380351
+    updated_at: 1782380351
+- id: c5818d89-a58a-43f2-af38-81ba6f6c9097
+  data:
+    blog_name: Code & Coffee Chronicles 2
+    content: "Debugging isn’t just about fixing errors — it’s about understanding how your logic interacts with the system. Every bug is a hidden lesson: sometimes it’s a reminder to handle edge cases, sometimes it’s a nudge to write cleaner code, and often it’s a push to think like the compiler.\n\nWhen you debug, you’re not just solving problems; you’re sharpening your ability to anticipate them. That’s why seasoned developers often say: “Code is written once, but debugged forever.”\n\nSo next time you hit a bug, don’t get frustrated. Grab a cup of coffee, slow down, and let the bug guide you to becoming a sharper programmer."
+    author: 7b7e1698-5951-4424-be20-d66af722b2bd
+    created_at: 1782381215
+    updated_at: 1782381215
+- id: 09a558dc-3fdd-4fb2-ad16-9f71cbb354d3
+  data:
+    blog_name: Code & Coffee Chronicles 3
+    content: "Debugging isn’t just about fixing errors — it’s about understanding how your logic interacts with the system. Every bug is a hidden lesson: sometimes it’s a reminder to handle edge cases, sometimes it’s a nudge to write cleaner code, and often it’s a push to think like the compiler.\n\nWhen you debug, you’re not just solving problems; you’re sharpening your ability to anticipate them. That’s why seasoned developers often say: “Code is written once, but debugged forever.”\n\nSo next time you hit a bug, don’t get frustrated. Grab a cup of coffee, slow down, and let the bug guide you to becoming a sharper programmer."
+    author: 7b7e1698-5951-4424-be20-d66af722b2bd
+    created_at: 1782386921
+    updated_at: 1782386921
 users:
-    - id: 7b7e1698-5951-4424-be20-d66af722b2bd
-      data:
-        username: hello
-        password_hash: 7d793037a0760186574b0282f2f435e7
-        created_at: 1781974562
-        last_session_on: 1781975146
+- id: 7b7e1698-5951-4424-be20-d66af722b2bd
+  data:
+    username: hello
+    password_hash: 7d793037a0760186574b0282f2f435e7
+    created_at: 1781974562
+    last_session_on: 1782386877
+- id: 51ace53d-8be6-43c5-a611-5c6baf1ce5b8
+  data:
+    username: hello2
+    password_hash: 015308dd469e01f05a9f41daf2cbaadb
+    created_at: 1782386947
+    last_session_on: 1782386955
