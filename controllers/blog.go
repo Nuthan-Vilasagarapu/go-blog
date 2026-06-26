@@ -3,9 +3,7 @@ package controllers
 import (
 	"go-blog/interfaces"
 	"go-blog/repository"
-	"go-blog/stores"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,7 +45,7 @@ func UpdateBlog(ctx *gin.Context) {
 	name := ctx.Request.FormValue("name")
 	content := ctx.Request.FormValue("content")
 
-	status := repository.UpdateBlogByID(id, interfaces.IBlog{
+	status := repository.UpdateBlogByID(id, interfaces.DBBlogDataFmt{
 		BlogName: name,
 		Content:  content,
 	})
@@ -62,7 +60,7 @@ func DeleteBlog(ctx *gin.Context) {
 	id := ctx.Params.ByName("id")
 	status := repository.DeleteBlog(id)
 	if status {
-		ctx.JSON(http.StatusNoContent, gin.H{"message": "Blog deleted succesfully", "blogs": stores.Blogs})
+		ctx.JSON(http.StatusNoContent, gin.H{"message": "Blog deleted succesfully"})
 	} else {
 		ctx.JSON(http.StatusNotFound, gin.H{"message": "blog not found"})
 	}
@@ -70,7 +68,7 @@ func DeleteBlog(ctx *gin.Context) {
 
 func DeleteBlogs(ctx *gin.Context) {
 	_ = repository.DeleteBlogs()
-	ctx.JSON(http.StatusNoContent, gin.H{"message": "All Blogs deleted succesfully", "blogs": stores.Blogs})
+	ctx.JSON(http.StatusNoContent, gin.H{"message": "All Blogs deleted succesfully"})
 }
 
 func ListBlogs(ctx *gin.Context) {
@@ -89,12 +87,13 @@ func ViewBlog(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "Blog not found!"})
 	}
 
-	viewBlog := interfaces.IViewBlog{
-		Id:          blog.Id,
-		Name:        blog.BlogName,
-		Content:     blog.Content,
-		Author:      repository.GetUserById(blog.Author).UserName,
-		PublishedAt: time.Unix(blog.CreatedAt.Unix(), 0).UTC().String(),
+	viewBlog := interfaces.DBBlogFmt{
+		Id:   blog.Id,
+		Data: blog.Data,
+		// Name:        blog.BlogName,
+		// Content:     blog.Content,
+		// Author:      repository.GetUserById(blog.Author).UserName,
+		// PublishedAt: time.Unix(blog.CreatedAt.Unix(), 0).UTC().String(),
 	}
 	ctx.HTML(http.StatusOK, "view-blog.html", gin.H{
 		"title": "Blog Website",
@@ -103,14 +102,15 @@ func ViewBlog(ctx *gin.Context) {
 }
 
 func ViewBlogs(ctx *gin.Context) {
-	var blogs []interfaces.IViewBlog
+	var blogs []interfaces.DBBlogFmt
 	for _, blog := range repository.GetAllBlogs() {
-		blogs = append(blogs, interfaces.IViewBlog{
-			Id:          blog.Id,
-			Name:        blog.BlogName,
-			Content:     blog.Content,
-			Author:      repository.GetUserById(blog.Author).UserName,
-			PublishedAt: time.Unix(blog.CreatedAt.Unix(), 0).UTC().String(),
+		blogs = append(blogs, interfaces.DBBlogFmt{
+			Id:   blog.Id,
+			Data: blog.Data,
+			// Name:        blog.BlogName,
+			// Content:     blog.Content,
+			// Author:      repository.GetUserById(blog.Author).UserName,
+			// PublishedAt: time.Unix(blog.CreatedAt.Unix(), 0).UTC().String(),
 		})
 	}
 	ctx.HTML(http.StatusOK, "list-blog.html", gin.H{

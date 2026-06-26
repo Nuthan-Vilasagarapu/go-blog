@@ -8,4 +8,5 @@ import (
 
 func LoadViewRoutes(router *gin.Engine) {
 	router.GET("/", controllers.HomePage)
+	router.Any("/health", controllers.Health)
 }

@@ -34,16 +34,19 @@ blogs:
     author: 7b7e1698-5951-4424-be20-d66af722b2bd
     created_at: 1782386921
     updated_at: 1782386921
+
 users:
 - id: 7b7e1698-5951-4424-be20-d66af722b2bd
   data:
     username: hello
     password_hash: 7d793037a0760186574b0282f2f435e7
     created_at: 1781974562
-    last_session_on: 1781974562
+    last_session_on: 1782472751
+    last_updated_at: 1782472751
 - id: 51ace53d-8be6-43c5-a611-5c6baf1ce5b8
   data:
     username: hello2
     password_hash: 015308dd469e01f05a9f41daf2cbaadb
     created_at: 1782386947
     last_session_on: 1782388525
+    last_updated_at: 0

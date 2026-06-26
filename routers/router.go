@@ -6,8 +6,7 @@ import (
 
 func LoadRoutes(router *gin.Engine) {
 	router.LoadHTMLGlob("templates/*")
-
+	LoadViewRoutes(router)
 	LoadAuthRoutes(router)
 	LoadBlogRoutes(router)
-	LoadViewRoutes(router)
 }

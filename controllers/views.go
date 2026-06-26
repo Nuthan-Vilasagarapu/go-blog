@@ -12,3 +12,9 @@ func HomePage(ctx *gin.Context) {
 		"message": "Wellcome to my Blogs",
 	})
 }
+
+func Health(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": "OK!",
+	})
+}

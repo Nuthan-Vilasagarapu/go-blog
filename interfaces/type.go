@@ -1,25 +1,5 @@
 package interfaces
 
-import "time"
-
-type IBlog struct {
-	BlogName  string    `json:"blog_name"`
-	Id        string    `json:"id"`
-	Content   string    `json:"content"`
-	Author    string    `json:"author"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-}
-
-type IUser struct {
-	Id           string    `json:"id"`
-	UserName     string    `json:"username"`
-	CreatedAt    time.Time `json:"created_at"`
-	LastLoginAt  time.Time `json:"last_session_on"`
-	UpdateAt     time.Time `json:"updated_at"`
-	PasswordHash string
-}
-
 type DBBlogDataFmt struct {
 	BlogName  string `yaml:"blog_name"`
 	Content   string `yaml:"content"`
@@ -38,6 +18,7 @@ type DBUserDataFmt struct {
 	PasswordHash string `yaml:"password_hash"`
 	CreatedAt    int64  `yaml:"created_at"`
 	LastLoginAt  int64  `yaml:"last_session_on"`
+	UpdatedAt    int    `yaml:"last_updated_at"`
 }
 
 type DBUserFmt struct {
@@ -48,12 +29,4 @@ type DBUserFmt struct {
 type DBFmt struct {
 	Blogs []DBBlogFmt `yaml:"blogs"`
 	Users []DBUserFmt `yaml:"users"`
-}
-
-type IViewBlog struct {
-	Id, Name, Content, Author, PublishedAt string
-}
-
-type IViewBlogs struct {
-	Blogs []IViewBlog
 }

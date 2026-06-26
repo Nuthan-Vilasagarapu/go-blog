@@ -3,13 +3,10 @@ package stores
 
 import (
 	"errors"
-	"go-blog/interfaces"
 )
 
 var (
 	Session = make(map[string]string)
-	Blogs   = []interfaces.IBlog{}
-	Users   = []interfaces.IUser{}
 )
 
 func SetSession(token, user_id string) {

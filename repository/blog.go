@@ -4,7 +4,6 @@ package repository
 
 import (
 	"go-blog/interfaces"
-	"go-blog/stores"
 	"slices"
 	"strings"
 
@@ -13,19 +12,21 @@ import (
 	"github.com/google/uuid"
 )
 
-func GetAllBlogs() []interfaces.IBlog {
-	return stores.Blogs
+func GetAllBlogs() []interfaces.DBBlogFmt {
+	return ReadFromDb()
 }
 
-func GetBlogById(id string) *interfaces.IBlog {
+func GetBlogById(id string) *interfaces.DBBlogFmt {
 	for _, blog := range GetAllBlogs() {
-		viewBlog := interfaces.IBlog{
-			BlogName:  blog.BlogName,
-			Content:   blog.Content,
-			Author:    blog.Author,
-			Id:        blog.Id,
-			CreatedAt: blog.CreatedAt,
-			UpdatedAt: blog.UpdatedAt,
+		viewBlog := interfaces.DBBlogFmt{
+			Id: blog.Id,
+			Data: interfaces.DBBlogDataFmt{
+				BlogName:  blog.Data.BlogName,
+				Content:   blog.Data.Content,
+				Author:    blog.Data.Author,
+				CreatedAt: blog.Data.CreatedAt,
+				UpdatedAt: blog.Data.UpdatedAt,
+			},
 		}
 		if id == viewBlog.Id {
 			return &viewBlog
@@ -36,28 +37,32 @@ func GetBlogById(id string) *interfaces.IBlog {
 
 func CreateBlog(
 	name, content, author string,
-) interfaces.IBlog {
+) interfaces.DBBlogFmt {
+	blogs := GetAllBlogs()
 	id := uuid.New()
-	blog := interfaces.IBlog{
-		BlogName:  name,
-		Id:        id.String(),
-		Content:   content,
-		Author:    author,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+	blog := interfaces.DBBlogFmt{
+		Id: id.String(),
+		Data: interfaces.DBBlogDataFmt{
+			BlogName:  name,
+			Content:   content,
+			Author:    author,
+			CreatedAt: time.Now().Unix(),
+			UpdatedAt: time.Now().Unix(),
+		},
 	}
-	stores.Blogs = append(stores.Blogs, blog)
-	WriteToDb(&stores.DB, stores.Blogs)
+	blogs = append(blogs, blog)
+	WriteToDb(blogs)
 	return blog
 }
 
 func DeleteBlog(
 	id string,
 ) bool {
-	for i, blog := range GetAllBlogs() {
+	blogs := GetAllBlogs()
+	for i, blog := range blogs {
 		if blog.Id == id {
-			stores.Blogs = slices.Delete(stores.Blogs, i, i+1)
-			WriteToDb(&stores.DB, stores.Blogs)
+			blogs = slices.Delete(blogs, i, i+1)
+			WriteToDb(blogs)
 			return true
 		}
 	}
@@ -66,19 +71,20 @@ func DeleteBlog(
 
 func UpdateBlogByID(
 	id string,
-	new_blog interfaces.IBlog,
+	new_blog interfaces.DBBlogDataFmt,
 ) bool {
-	for i, blog := range GetAllBlogs() {
+	blogs := GetAllBlogs()
+	for i, blog := range blogs {
 		if blog.Id == id {
 			if new_blog.BlogName != "" {
-				blog.BlogName = new_blog.BlogName
+				blog.Data.BlogName = new_blog.BlogName
 			}
 			if new_blog.Content != "" {
-				blog.Content = new_blog.Content
+				blog.Data.Content = new_blog.Content
 			}
-			blog.UpdatedAt = time.Now()
-			stores.Blogs[i] = blog
-			WriteToDb(&stores.DB, stores.Blogs)
+			blog.Data.UpdatedAt = time.Now().Unix()
+			blogs[i] = blog
+			WriteToDb(blogs)
 			return true
 		}
 	}
@@ -86,31 +92,29 @@ func UpdateBlogByID(
 }
 
 func DeleteBlogs() bool {
-	stores.Blogs = []interfaces.IBlog{}
-	WriteToDb(&stores.DB, stores.Blogs)
+	Blogs := []interfaces.DBBlogFmt{}
+	WriteToDb(Blogs)
 	return true
 }
 
 func GetBlogsByAuthorId(
 	author_id string,
-) []interfaces.IBlog {
-	authorBlogs := []interfaces.IBlog{}
-
+) []interfaces.DBBlogFmt {
+	authorBlogs := []interfaces.DBBlogFmt{}
 	for _, blog := range GetAllBlogs() {
-		if blog.Author == author_id {
+		if blog.Data.Author == author_id {
 			authorBlogs = append(authorBlogs, blog)
 		}
 	}
-
 	return authorBlogs
 }
 
 func SearchBlogs(
 	name_snippet, content_snippet string,
-) []interfaces.IBlog {
-	blogFound := []interfaces.IBlog{}
+) []interfaces.DBBlogFmt {
+	blogFound := []interfaces.DBBlogFmt{}
 	for _, blog := range GetAllBlogs() {
-		if (name_snippet != "" && strings.Contains(blog.BlogName, name_snippet)) || (content_snippet != "" && strings.Contains(blog.Content, content_snippet)) {
+		if (name_snippet != "" && strings.Contains(blog.Data.BlogName, name_snippet)) || (content_snippet != "" && strings.Contains(blog.Data.Content, content_snippet)) {
 			blogFound = append(blogFound, blog)
 		}
 	}

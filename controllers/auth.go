@@ -40,7 +40,7 @@ func LoginUser(ctx *gin.Context) {
 		ctx.Abort()
 	}
 
-	if !utils.Comparehash(passwordPlain, user.PasswordHash) {
+	if !utils.Comparehash(passwordPlain, user.Data.PasswordHash) {
 		ctx.JSON(http.StatusForbidden, gin.H{"error": "Invalid Password"})
 		ctx.Abort()
 	}
@@ -55,8 +55,8 @@ func LoginUser(ctx *gin.Context) {
 	}
 	stores.SetSession(*token, user.Id)
 
-	success := repository.UpdateUser(user.Id, interfaces.IUser{
-		LastLoginAt: time.Now(),
+	success := repository.UpdateUser(user.Id, interfaces.DBUserDataFmt{
+		LastLoginAt: time.Now().Unix(),
 	})
 
 	if success {
